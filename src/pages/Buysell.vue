@@ -1,0 +1,354 @@
+<template>
+  <div class="min-h-screen flex flex-col">
+    <Navbar />
+    <div class="grid grid-cols-1 lg:grid-cols-6 lg:grid-rows-[150px_auto] gap-4 mx-4 lg:mx-64 mt-10 mb-10">
+      <!-- Card 1: Asset Card -->
+      <div class="lg:col-span-4 w-full p-4 bg-white border border-gray-200 rounded-lg shadow sm:p-4 dark:bg-gray-800 dark:border-gray-700">
+        <div class="flex justify-between mb-2">
+          <div>
+            <span class="bg-blue-100 text-blue-800 text-sm font-medium me-2 px-2.5 py-0.5 rounded dark:bg-blue-900 dark:text-blue-300">ความเสี่ยง</span>
+            <span class="bg-blue-100 text-blue-800 text-sm font-medium me-2 px-2.5 py-0.5 rounded dark:bg-blue-900 dark:text-blue-300">ลดหย่อนภาษี</span>
+          </div>
+          <transition name="modal">
+            <BuysellPopUp ref="buySellModal" />
+          </transition>
+          <div id="app" ref="menuContainer" class="relative inline-block">
+            <!-- Slide-Up Menu -->
+            <transition
+              enter-active-class="transition transform ease-out duration-300"
+              enter-from-class="translate-y-4 opacity-0"
+              enter-to-class="translate-y-0 opacity-100"
+              leave-active-class="transition transform ease-in duration-200"
+              leave-from-class="translate-y-0 opacity-100"
+              leave-to-class="translate-y-4 opacity-0">
+              <div v-if="showMenu" class="absolute bottom-full mb-2 flex flex-col space-y-2">
+                <button type="button" @click="openModal"
+                  class="px-3 py-0.5 text-xs font-medium text-white bg-green-500 rounded-lg hover:bg-green-600 focus:ring-4 focus:outline-none focus:ring-green-300">
+                  ซื้อ
+                </button>
+                <button type="button"
+                  class="px-3 py-0.5 text-xs font-medium text-white bg-red-500 rounded-lg hover:bg-red-600 focus:ring-4 focus:outline-none focus:ring-red-300">
+                  ขาย
+                </button>
+              </div>
+            </transition>
+            <button type="button" @click="toggleMenu"
+              class="px-3 py-0.5 text-xs font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+              ซื้อ-ขาย
+            </button>
+          </div>
+        </div>
+        <div class="flex justify-between items-center">
+          <div class="text-left">
+            <!-- fundName จาก route -->
+            <div class="text-2xl">{{ fundName }}</div>
+            <div class="text-xl">Full Name</div>
+          </div>
+          <div class="flex gap-5 items-center">
+            <div>
+              <div class="text-2xl">1.234567</div>
+              <div class="text-xl">0.00 (0.00%)</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 2: ผลการดำเนินการย้อนหลัง -->
+      <div class="lg:col-span-2 lg:row-span-2 w-full p-4 bg-white border border-gray-200 rounded-lg shadow sm:p-4 dark:bg-gray-800 dark:border-gray-700">
+        <div class="flex items-center justify-between mb-4">
+          <h5 class="text-xl font-bold leading-none text-gray-900 dark:text-white">ผลการดำเนินการย้อนหลัง</h5>
+        </div>
+        <div>
+          <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+            <thead>
+              <tr>
+                <th class="px-4 py-4 font-medium">3 เดือน</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="bg-white dark:bg-gray-800">
+                <td class="px-6 py-4">White</td>
+              </tr>
+              <!-- เพิ่มแถวเพิ่มเติมตามต้องการ -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Card 3: กราฟและปุ่มเลือก timeframe -->
+  <div class="lg:col-span-4 w-full bg-white border border-gray-200 rounded-lg shadow sm:p-4 dark:bg-gray-800 dark:border-gray-700">
+    <div class="flex flex-col justify-center h-full">
+      <!-- Button Container for Timeframe -->
+      <div class="flex space-x-2 mb-4">
+        <button
+          v-for="option in timeframeOptions"
+          :key="option"
+          @click="selectedTimeframe = option"
+          :class="[
+            'text-xs bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded',
+            selectedTimeframe === option ? 'bg-blue-500 text-white' : ''
+          ]"
+        >
+          {{ option }}
+        </button>
+      </div>
+      <!-- Chart Container -->
+      <div class="flex items-center justify-center h-full">
+        <Line :data="chartData" :options="chartOptions" />
+      </div>
+    </div>
+  </div>
+
+      <!-- Card 4: Tab Navigation & Content -->
+      <div class="lg:col-span-6 lg:row-span-1 w-full bg-white border border-gray-200 rounded-lg shadow sm:p-4 dark:bg-gray-800 dark:border-gray-700">
+        <!-- Navigation Tabs -->
+        <div class="text-sm font-medium text-gray-500 border-b border-gray-200 dark:text-gray-400 dark:border-gray-700">
+          <ul class="flex flex-wrap -mb-px justify-start">
+            <li class="me-2" v-for="tab in tabs" :key="tab.id">
+              <a href="#" @click.prevent="activeTab = tab.id" :class="[
+                'inline-block p-4 border-b-2 rounded-t-lg hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300',
+                activeTab === tab.id ? 'text-blue-600 border-blue-600' : 'border-transparent'
+              ]">
+                {{ tab.name }}
+              </a>
+            </li>
+          </ul>
+        </div>
+        <!-- Content Section for คำแนะนำ -->
+        <div v-if="activeTab === 'tab1'" class="p-4">
+          <!-- Icon Section -->
+          <div class="flex justify-center items-center space-x-12">
+            <!-- Icon for ซื้อ -->
+            <div class="flex flex-col items-center">
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-16 h-16 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+              </svg>
+              <span class="mt-2 text-xl font-bold">ซื้อ</span>
+            </div>
+            <!-- Icon for ไม่ซื้อ -->
+            <div class="flex flex-col items-center">
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-16 h-16 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+              <span class="mt-2 text-xl font-bold">ไม่ซื้อ</span>
+            </div>
+          </div>
+        </div>
+        <!-- Content Section for รายละเอียดกองทุน -->
+        <div v-if="activeTab === 'tab2'" class="p-4">
+          <div class="relative grid grid-cols-1 md:grid-cols-2 gap-16">
+            <div>
+              <!-- หนังสือชี้ชวน -->
+              <div class="flex justify-between items-center mb-2">
+                <span class="font-semibold">หนังสือชี้ชวน</span>
+                <span class="text-gray-500 dark:text-gray-400">หนังสือชี้ชวน</span>
+              </div>
+              <!-- บลจ. -->
+              <div class="flex justify-between items-center mb-2">
+                <span class="font-semibold">บลจ.</span>
+                <span class="text-gray-500 dark:text-gray-400">ชื่อ บลจ.</span>
+              </div>
+              <!-- ประเภทกองทุน -->
+              <div class="flex justify-between items-center mb-2">
+                <span class="font-semibold">ประเภทกองทุน</span>
+                <span class="text-gray-500 dark:text-gray-400">หุ้น</span>
+              </div>
+              <!-- ความเสี่ยง -->
+              <div class="flex justify-between items-center mb-2">
+                <span class="font-semibold">ความเสี่ยง</span>
+                <span class="text-gray-500 dark:text-gray-400">หุ้น</span>
+              </div>
+              <!-- จ่ายปันผล -->
+              <div class="flex justify-between items-center mb-2">
+                <span class="font-semibold">นโยบายการจ่ายปันผล</span>
+                <span class="text-gray-500 dark:text-gray-400">ม่ายจ่าย</span>
+              </div>
+              <!-- รายการที่ 2 -->
+              <div class="flex justify-between items-center mb-2">
+                <span class="font-semibold">มูลค่าทรัพย์สินสุทธิ</span>
+                <span class="text-gray-500 dark:text-gray-400">1,000,000 บาท</span>
+              </div>
+              <div class="hidden md:block absolute inset-y-0 left-1/2 w-px bg-gray-300"></div>
+            </div>
+            <div>
+              <!-- ค่าธรรมเนียมการขาย -->
+              <div class="flex justify-between items-center mb-2">
+                <span class="font-semibold">ค่าธรรมเนียมการขาย</span>
+                <span class="text-gray-500 dark:text-gray-400">0.00%</span>
+              </div>
+              <!-- ค่าธรรมเนียมรับซื้อคืน -->
+              <div class="flex justify-between items-center mb-2">
+                <span class="font-semibold">ค่าธรรมเนียมรับซื้อคืน</span>
+                <span class="text-gray-500 dark:text-gray-400">0.00%</span>
+              </div>
+              <!-- ค่าใช้จ่ายกองทุนรวม -->
+              <div class="flex justify-between items-center mb-2">
+                <span class="font-semibold">ค่าใช้จ่ายกองทุนรวม</span>
+                <span class="text-gray-500 dark:text-gray-400">0.00%</span>
+              </div>
+              <!-- ลงทุนขั้นต่ำ -->
+              <div class="flex justify-between items-center mb-2">
+                <span class="font-semibold">ลงทุนขั้นต่ำ</span>
+                <span class="text-gray-500 dark:text-gray-400">0.00%</span>
+              </div>
+              <!-- วันจดทะเบียนกองทุน -->
+              <div class="flex justify-between items-center mb-2">
+                <span class="font-semibold">วันจดทะเบียนกองทุน</span>
+                <span class="text-gray-500 dark:text-gray-400">0.00%</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script>
+import Navbar from "@/components/Navbar";
+import BuysellPopUp from "@/components/BuysellPopUp.vue";
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend
+} from "chart.js";
+import { Line } from "vue-chartjs";
+
+ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
+
+export default {
+  name: "Buysell",
+  components: {
+    Navbar,
+    Line,
+    BuysellPopUp
+  },
+  data() {
+    return {
+      apiData: [],
+      showMenu: false,
+      chartData: {
+        labels: [], // chartData will be populated via fetchData or computed if needed
+        datasets: [
+          {
+            label: "Data One",
+            backgroundColor: "rgba(75,192,192,0.2)",
+            borderColor: "rgba(75,192,192,1)",
+            pointBackgroundColor: "rgba(75,192,192,1)",
+            data: [] // Data array will be set after fetching data
+          }
+        ]
+      },
+      chartOptions: {
+        responsive: true,
+        maintainAspectRatio: false
+      },
+      activeTab: "tab1", // กำหนดแท็บเริ่มต้นที่แสดง
+      tabs: [
+        { id: "tab1", name: "คำแนะนำ" },
+        { id: "tab2", name: "รายละเอียดกองทุน" }
+      ]
+    };
+  },
+  computed: {
+    // รับชื่อกองทุนจาก query parameter ใน route
+    fundName() {
+      return this.$route.query.name || "";
+    }
+  },
+  methods: {
+    toggleMenu() {
+      this.showMenu = !this.showMenu;
+    },
+    handleClickOutside(event) {
+      if (this.$refs.menuContainer && !this.$refs.menuContainer.contains(event.target)) {
+        this.showMenu = false;
+      }
+    },
+    openModal() {
+      this.showMenu = false;
+      if (this.$refs.buySellModal && this.$refs.buySellModal.openModal) {
+        this.$refs.buySellModal.openModal();
+      }
+    },
+    async fetchData() {
+      try {
+        // ใช้ fundName จาก route ใน URL สำหรับ fetch ข้อมูล
+        const endpoint = `/api/nav-history/fund/${encodeURIComponent(this.fundName)}`;
+        const response = await fetch(endpoint, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json"
+          }
+        });
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const data = await response.json();
+        console.log("Fetched API data:", data);
+        this.apiData = data;
+        // หากต้องการอัพเดท chartData จาก apiData ให้คุณอัพเดท chartData ด้วย
+        this.updateChartData();
+      } catch (error) {
+        console.error("Failed to fetch API data:", error);
+      }
+    },
+    updateChartData() {
+      // สมมุติว่าแต่ละ object ใน apiData มี field "date" และ "nav"
+      const labels = this.apiData.map(item => item.date);
+      const dataPoints = this.apiData.map(item => item.nav);
+      this.chartData = {
+        labels,
+        datasets: [
+          {
+            label: "NAV",
+            data: dataPoints,
+            fill: false,
+            borderColor: "rgba(75,192,192,1)",
+            backgroundColor: "rgba(75,192,192,0.2)",
+            tension: 0.1
+          }
+        ]
+      };
+    }
+  },
+  mounted() {
+    this.fetchData();
+    document.addEventListener("click", this.handleClickOutside);
+  },
+  beforeUnmount() {
+    document.removeEventListener("click", this.handleClickOutside);
+  }
+};
+</script>
+
+<style scoped>
+/* Scrollbar Container */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+/* Scrollbar Track */
+::-webkit-scrollbar-track {
+  background: #e0e0e0;
+  border-radius: 10px;
+}
+
+/* Scrollbar Thumb */
+::-webkit-scrollbar-thumb {
+  background: #64748b;
+  border-radius: 10px;
+  border: 2px solid #e0e0e0;
+}
+
+/* Scrollbar Thumb Hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #4b5563;
+}
+</style>
