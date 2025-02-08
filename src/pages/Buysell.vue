@@ -3,24 +3,24 @@
     <Navbar />
     <div class="grid grid-cols-1 lg:grid-cols-6 lg:grid-rows-[150px_auto] gap-4 mx-4 lg:mx-64 mt-10 mb-10">
       <!-- Card 1: Asset Card -->
-      <div class="lg:col-span-4 w-full p-4 bg-white border border-gray-200 rounded-lg shadow sm:p-4 dark:bg-gray-800 dark:border-gray-700">
+      <div
+        class="lg:col-span-4 w-full p-4 bg-white border border-gray-200 rounded-lg shadow sm:p-4 dark:bg-gray-800 dark:border-gray-700">
         <div class="flex justify-between mb-2">
           <div>
-            <span class="bg-blue-100 text-blue-800 text-sm font-medium me-2 px-2.5 py-0.5 rounded dark:bg-blue-900 dark:text-blue-300">ความเสี่ยง</span>
-            <span class="bg-blue-100 text-blue-800 text-sm font-medium me-2 px-2.5 py-0.5 rounded dark:bg-blue-900 dark:text-blue-300">ลดหย่อนภาษี</span>
+            <span
+              class="bg-blue-100 text-blue-800 text-sm font-medium me-2 px-2.5 py-0.5 rounded dark:bg-blue-900 dark:text-blue-300">ความเสี่ยง</span>
+            <span
+              class="bg-blue-100 text-blue-800 text-sm font-medium me-2 px-2.5 py-0.5 rounded dark:bg-blue-900 dark:text-blue-300">ลดหย่อนภาษี</span>
           </div>
           <transition name="modal">
             <BuysellPopUp ref="buySellModal" />
           </transition>
           <div id="app" ref="menuContainer" class="relative inline-block">
             <!-- Slide-Up Menu -->
-            <transition
-              enter-active-class="transition transform ease-out duration-300"
-              enter-from-class="translate-y-4 opacity-0"
-              enter-to-class="translate-y-0 opacity-100"
+            <transition enter-active-class="transition transform ease-out duration-300"
+              enter-from-class="translate-y-4 opacity-0" enter-to-class="translate-y-0 opacity-100"
               leave-active-class="transition transform ease-in duration-200"
-              leave-from-class="translate-y-0 opacity-100"
-              leave-to-class="translate-y-4 opacity-0">
+              leave-from-class="translate-y-0 opacity-100" leave-to-class="translate-y-4 opacity-0">
               <div v-if="showMenu" class="absolute bottom-full mb-2 flex flex-col space-y-2">
                 <button type="button" @click="openModal"
                   class="px-3 py-0.5 text-xs font-medium text-white bg-green-500 rounded-lg hover:bg-green-600 focus:ring-4 focus:outline-none focus:ring-green-300">
@@ -54,53 +54,157 @@
       </div>
 
       <!-- Card 2: ผลการดำเนินการย้อนหลัง -->
-      <div class="lg:col-span-2 lg:row-span-2 w-full p-4 bg-white border border-gray-200 rounded-lg shadow sm:p-4 dark:bg-gray-800 dark:border-gray-700">
+      <div
+        class="lg:col-span-2 lg:row-span-2 w-full p-4 bg-white border border-gray-200 rounded-lg shadow sm:p-4 dark:bg-gray-800 dark:border-gray-700">
         <div class="flex items-center justify-between mb-4">
           <h5 class="text-xl font-bold leading-none text-gray-900 dark:text-white">ผลการดำเนินการย้อนหลัง</h5>
         </div>
         <div>
-          <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-            <thead>
-              <tr>
-                <th class="px-4 py-4 font-medium">3 เดือน</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr class="bg-white dark:bg-gray-800">
-                <td class="px-6 py-4">White</td>
-              </tr>
-              <!-- เพิ่มแถวเพิ่มเติมตามต้องการ -->
-            </tbody>
-          </table>
+          <div
+            class="w-full max-w-md p-4 bg-white border border-gray-200 rounded-lg shadow-sm sm:p-8 dark:bg-gray-800 dark:border-gray-700">
+            <div class="flex items-center justify-between gap-2 mb-4">
+              <ul
+                class="flex flex-col p-4 md:p-0 mt-4 font-medium border border-gray-100 rounded-lg bg-gray-50 md:space-x-8 rtl:space-x-reverse md:flex-row md:mt-0 md:border-0 md:bg-white dark:bg-gray-800 md:dark:bg-gray-900 dark:border-gray-700">
+                <li>
+                  <a href="#" @click="updateContent('return')"
+                    class="text-xs block py-1 px-1 text-gray-900 rounded-sm hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 md:dark:hover:text-blue-500 dark:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700">ผลตอบแทนย้อนหลัง</a>
+                </li>
+                <li>
+                  <a href="#" @click="updateContent('sd')"
+                    class="text-xs block py-1 px-1 text-gray-900 rounded-sm hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 md:dark:hover:text-blue-500 dark:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700">ค่าเบี่ยงเบนมาตราฐาน(SD)</a>
+                </li>
+                <li>
+                  <a href="#" @click="updateContent('sharpeRatio')"
+                    class="text-xs block py-1 px-1 text-gray-900 rounded-sm hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 md:dark:hover:text-blue-500 dark:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700">Sharpe
+                    Ratio</a>
+                </li>
+              </ul>
+            </div>
+            <div class="flow-root">
+              <ul role="list" class="divide-y divide-gray-200 dark:divide-gray-700">
+
+                <li class="py-3 sm:py-4">
+                  <div class="flex items-center">
+                    <div class="flex-1 min-w-0 ms-4">
+                      <p class="text-sm font-semibold text-gray-900 truncate dark:text-white">
+                        3 เดือน
+                      </p>
+                    </div>
+                    <div class="inline-flex items-center text-base font-semibold text-gray-900 dark:text-white">
+
+                      {{ SummaryData.find(item => item.duration === '3 เดือน')?.percentage }}
+                    </div>
+
+                  </div>
+                </li>
+
+                <li class="py-3 sm:py-4">
+                  <div class="flex items-center">
+                    <div class="flex-1 min-w-0 ms-4">
+                      <p class="text-sm font-semibold text-gray-900 truncate dark:text-white">
+                        6 เดือน
+                      </p>
+                    </div>
+
+                    <div class="inline-flex items-center text-base font-semibold text-gray-900 dark:text-white">
+
+                      {{ SummaryData.find(item => item.duration === '6 เดือน')?.percentage }}
+
+                    </div>
+
+                  </div>
+                </li>
+
+                <li class="py-3 sm:py-4">
+                  <div class="flex items-center">
+                    <div class="flex-1 min-w-0 ms-4">
+                      <p class="text-sm font-semibold text-gray-900 truncate dark:text-white">
+                        YTD
+                      </p>
+                    </div>
+
+                    <div class="inline-flex items-center text-base font-semibold text-gray-900 dark:text-white">
+                      {{ SummaryData.find(item => item.duration === 'YTD')?.percentage }}
+                    </div>
+
+                  </div>
+                </li>
+
+                <li class="py-3 sm:py-4">
+                  <div class="flex items-center">
+                    <div class="flex-1 min-w-0 ms-4">
+                      <p class="text-sm font-semibold text-gray-900 truncate dark:text-white">
+                        3 ปี
+                      </p>
+                    </div>
+
+                    <div class="inline-flex items-center text-base font-semibold text-gray-900 dark:text-white">
+                      {{ SummaryData.find(item => item.duration === '3 ปี')?.percentage }}
+                    </div>
+
+                  </div>
+                </li>
+
+                <li class="py-3 sm:py-4">
+                  <div class="flex items-center">
+                    <div class="flex-1 min-w-0 ms-4">
+                      <p class="text-sm font-semibold text-gray-900 truncate dark:text-white">
+                        5 ปี
+                      </p>
+                    </div>
+
+                    <div class="inline-flex items-center text-base font-semibold text-gray-900 dark:text-white">
+                      {{ SummaryData.find(item => item.duration === '5 ปี')?.percentage }}
+                    </div>
+
+                  </div>
+                </li>
+
+                <li class="py-3 sm:py-4">
+                  <div class="flex items-center">
+                    <div class="flex-1 min-w-0 ms-4">
+                      <p class="text-sm font-semibold text-gray-900 truncate dark:text-white">
+                        10 ปี
+                      </p>
+                    </div>
+
+                    <div class="inline-flex items-center text-base font-semibold text-gray-900 dark:text-white">
+                      {{ SummaryData.find(item => item.duration === '10 ปี')?.percentage }}
+                    </div>
+
+                  </div>
+                </li>
+
+              </ul>
+            </div>
+          </div>
+
         </div>
       </div>
 
       <!-- Card 3: กราฟและปุ่มเลือก timeframe -->
-  <div class="lg:col-span-4 w-full bg-white border border-gray-200 rounded-lg shadow sm:p-4 dark:bg-gray-800 dark:border-gray-700">
-    <div class="flex flex-col justify-center h-full">
-      <!-- Button Container for Timeframe -->
-      <div class="flex space-x-2 mb-4">
-        <button
-          v-for="option in timeframeOptions"
-          :key="option"
-          @click="selectedTimeframe = option"
-          :class="[
-            'text-xs bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded',
-            selectedTimeframe === option ? 'bg-blue-500 text-white' : ''
-          ]"
-        >
-          {{ option }}
-        </button>
+      <div
+        class="lg:col-span-4 w-full bg-white border border-gray-200 rounded-lg shadow sm:p-4 dark:bg-gray-800 dark:border-gray-700">
+        <div class="flex flex-col justify-center h-full">
+          <!-- Button Container for Timeframe -->
+          <div class="flex space-x-2 mb-4">
+            <button v-for="option in timeframeOptions" :key="option" @click="selectedTimeframe = option" :class="[
+              'text-xs bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded',
+              selectedTimeframe === option ? 'bg-blue-500 text-white' : ''
+            ]">
+              {{ option }}
+            </button>
+          </div>
+          <!-- Chart Container -->
+          <div class="flex items-center justify-center h-full">
+            <Line :data="chartData" :options="chartOptions" />
+          </div>
+        </div>
       </div>
-      <!-- Chart Container -->
-      <div class="flex items-center justify-center h-full">
-        <Line :data="chartData" :options="chartOptions" />
-      </div>
-    </div>
-  </div>
 
       <!-- Card 4: Tab Navigation & Content -->
-      <div class="lg:col-span-6 lg:row-span-1 w-full bg-white border border-gray-200 rounded-lg shadow sm:p-4 dark:bg-gray-800 dark:border-gray-700">
+      <div
+        class="lg:col-span-6 lg:row-span-1 w-full bg-white border border-gray-200 rounded-lg shadow sm:p-4 dark:bg-gray-800 dark:border-gray-700">
         <!-- Navigation Tabs -->
         <div class="text-sm font-medium text-gray-500 border-b border-gray-200 dark:text-gray-400 dark:border-gray-700">
           <ul class="flex flex-wrap -mb-px justify-start">
@@ -120,14 +224,16 @@
           <div class="flex justify-center items-center space-x-12">
             <!-- Icon for ซื้อ -->
             <div class="flex flex-col items-center">
-              <svg xmlns="http://www.w3.org/2000/svg" class="w-16 h-16 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-16 h-16 text-green-500" fill="none" viewBox="0 0 24 24"
+                stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
               </svg>
               <span class="mt-2 text-xl font-bold">ซื้อ</span>
             </div>
             <!-- Icon for ไม่ซื้อ -->
             <div class="flex flex-col items-center">
-              <svg xmlns="http://www.w3.org/2000/svg" class="w-16 h-16 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-16 h-16 text-red-500" fill="none" viewBox="0 0 24 24"
+                stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
               </svg>
               <span class="mt-2 text-xl font-bold">ไม่ซื้อ</span>
@@ -218,6 +324,7 @@ import {
   Legend
 } from "chart.js";
 import { Line } from "vue-chartjs";
+import { ref, onMounted } from 'vue';
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
 
@@ -228,6 +335,70 @@ export default {
     Line,
     BuysellPopUp
   },
+
+  setup() {
+    const SummaryData = ref([
+      { duration: '3 เดือน', percentage: '-10%' },
+      { duration: '6 เดือน', percentage: '-10%' },
+      { duration: 'YTD', percentage: '-10%' },
+      { duration: '3 ปี', percentage: '-10%' },
+      { duration: '5 ปี', percentage: '-10%' },
+      { duration: '10 ปี', percentage: '-10%' },
+    ])
+
+    const selectedContent = ref('return')
+
+    /* Use stage data for "ผลการดำเนินการย้อนหลัง" */
+
+    const updateContent = async (content) => {
+
+      selectedContent.value = content
+      if (content === 'return') {
+        // เปลี่ยนข้อมูลใน SummaryData สำหรับ 'return'
+        SummaryData.value = [
+          { duration: '3 เดือน', percentage: '-5%' },
+          { duration: '6 เดือน', percentage: '-4%' },
+          { duration: 'YTD', percentage: '-3%' },
+          { duration: '3 ปี', percentage: '2%' },
+          { duration: '5 ปี', percentage: '4%' },
+          { duration: '10 ปี', percentage: '7%' },
+        ];
+      } else if (content === 'sd') {
+        // เปลี่ยนข้อมูลใน SummaryData สำหรับ 'sd'
+        SummaryData.value = [
+          { duration: '3 เดือน', percentage: '0%' },
+          { duration: '6 เดือน', percentage: '1%' },
+          { duration: 'YTD', percentage: '2%' },
+          { duration: '3 ปี', percentage: '5%' },
+          { duration: '5 ปี', percentage: '7%' },
+          { duration: '10 ปี', percentage: '8%' },
+        ];
+      } else if (content === 'sharpeRatio') {
+        // เปลี่ยนข้อมูลใน SummaryData สำหรับ 'sharpeRatio'
+        SummaryData.value = [
+          { duration: '3 เดือน', percentage: '0%' },
+          { duration: '6 เดือน', percentage: '0%' },
+          { duration: 'YTD', percentage: '1%' },
+          { duration: '3 ปี', percentage: '3%' },
+          { duration: '5 ปี', percentage: '5%' },
+          { duration: '10 ปี', percentage: '6%' },
+        ];
+      }
+
+      console.log(selectedContent.value) /* <--- Debug selectedContent */
+    }
+
+    onMounted(() => {
+      updateContent()
+    })
+
+
+    return {
+      SummaryData,
+      updateContent,
+    };
+  },
+
   data() {
     return {
       apiData: [],
@@ -252,7 +423,7 @@ export default {
       tabs: [
         { id: "tab1", name: "คำแนะนำ" },
         { id: "tab2", name: "รายละเอียดกองทุน" }
-      ]
+      ],
     };
   },
   computed: {
@@ -315,15 +486,16 @@ export default {
           }
         ]
       };
-    }
+    },
   },
+
   mounted() {
     this.fetchData();
     document.addEventListener("click", this.handleClickOutside);
   },
   beforeUnmount() {
     document.removeEventListener("click", this.handleClickOutside);
-  }
+  },
 };
 </script>
 
