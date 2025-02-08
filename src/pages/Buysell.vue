@@ -62,24 +62,37 @@
         <div>
           <div
             class="w-full max-w-md p-4 bg-white border border-gray-200 rounded-lg shadow-sm sm:p-8 dark:bg-gray-800 dark:border-gray-700">
+
             <div class="flex items-center justify-between gap-2 mb-4">
-              <ul
-                class="flex flex-col p-4 md:p-0 mt-4 font-medium border border-gray-100 rounded-lg bg-gray-50 md:space-x-8 rtl:space-x-reverse md:flex-row md:mt-0 md:border-0 md:bg-white dark:bg-gray-800 md:dark:bg-gray-900 dark:border-gray-700">
+              <ul class="flex flex-col p-4 md:p-0 mt-4 font-medium border border-gray-100 rounded-lg bg-gray-50 
+             md:space-x-8 rtl:space-x-reverse md:flex-row md:mt-0 md:border-0 md:bg-white 
+             dark:bg-gray-800 md:dark:bg-gray-900 dark:border-gray-700">
+
                 <li>
-                  <a href="#" @click="updateContent('return')"
-                    class="text-xs block py-1 px-1 text-gray-900 rounded-sm hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 md:dark:hover:text-blue-500 dark:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700">ผลตอบแทนย้อนหลัง</a>
+                  <a href="#" @click.prevent="updateContent('return')" :class="['text-xs block py-1 px-3 rounded-sm md:p-0',
+                    selectedContent === 'return' ? 'bg-blue-500 text-white' : 'text-gray-900 hover:bg-gray-100']">
+                    ผลตอบแทนย้อนหลัง
+                  </a>
                 </li>
+
                 <li>
-                  <a href="#" @click="updateContent('sd')"
-                    class="text-xs block py-1 px-1 text-gray-900 rounded-sm hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 md:dark:hover:text-blue-500 dark:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700">ค่าเบี่ยงเบนมาตราฐาน(SD)</a>
+                  <a href="#" @click.prevent="updateContent('sd')" :class="['text-xs block py-1 px-3 rounded-sm md:p-0',
+                    selectedContent === 'sd' ? 'bg-blue-500 text-white' : 'text-gray-900 hover:bg-gray-100']">
+                    ค่าเบี่ยงเบนมาตราฐาน (SD)
+                  </a>
                 </li>
+
                 <li>
-                  <a href="#" @click="updateContent('sharpeRatio')"
-                    class="text-xs block py-1 px-1 text-gray-900 rounded-sm hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 md:dark:hover:text-blue-500 dark:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700">Sharpe
-                    Ratio</a>
+                  <a href="#" @click.prevent="updateContent('sharpeRatio')" :class="['text-xs block py-1 px-3 rounded-sm md:p-0',
+                    selectedContent === 'sharpeRatio' ? 'bg-blue-500 text-white' : 'text-gray-900 hover:bg-gray-100']">
+                    Sharpe Ratio
+                  </a>
                 </li>
+
               </ul>
             </div>
+
+
             <div class="flow-root">
               <ul role="list" class="divide-y divide-gray-200 dark:divide-gray-700">
 
@@ -352,36 +365,67 @@ export default {
 
     const updateContent = async (content) => {
 
+      var data
+
+      /* ทุกครั้งที่เปลี่ยนแถบ update เลย */
+      const jwtToken = localStorage.getItem("jwtToken") // ✅ ดึง Token จาก localStorage
+      if (!jwtToken) {
+        console.error("JWT token ไม่ถูกพบใน localStorage")
+        return
+      }
+
+      try {
+        const response = await fetch("/api/performance-mutual-funds/lastest/BERMF",
+        // const response = await fetch(`/api/performance-mutual-funds/lastest/${this.$route.query.name || ""}`,
+          {
+            method: "GET",
+            headers: {
+              "Authorization": `Bearer ${jwtToken}`, // ✅ ใช้ Token ที่ดึงมา
+              "Content-Type": "application/json"
+            }
+          }
+        )
+
+        data = await response.json()
+
+        console.log("get_performance_mutual_funds :", data)
+
+
+      } catch (error) {
+        console.error("Error in get_performance_mutual_funds :", error)
+      }
+
+
       selectedContent.value = content
       if (content === 'return') {
         // เปลี่ยนข้อมูลใน SummaryData สำหรับ 'return'
         SummaryData.value = [
-          { duration: '3 เดือน', percentage: '-5%' },
-          { duration: '6 เดือน', percentage: '-4%' },
-          { duration: 'YTD', percentage: '-3%' },
-          { duration: '3 ปี', percentage: '2%' },
-          { duration: '5 ปี', percentage: '4%' },
-          { duration: '10 ปี', percentage: '7%' },
+          { duration: '3 เดือน', percentage: data['tree_month_roc'] || '-' },
+          { duration: '6 เดือน', percentage: data['six_month_roc'] || '-'  },
+          { duration: 'YTD', percentage: data['ytd_roc'] || '-' },
+          { duration: '3 ปี', percentage: data['six_month_roc'] || '-' },
+          { duration: '5 ปี', percentage: data['five_year_roc'] || '-' },
+          { duration: '10 ปี', percentage: data['ten_year_roc'] || '-' },
         ];
       } else if (content === 'sd') {
         // เปลี่ยนข้อมูลใน SummaryData สำหรับ 'sd'
         SummaryData.value = [
-          { duration: '3 เดือน', percentage: '0%' },
-          { duration: '6 เดือน', percentage: '1%' },
-          { duration: 'YTD', percentage: '2%' },
-          { duration: '3 ปี', percentage: '5%' },
-          { duration: '5 ปี', percentage: '7%' },
-          { duration: '10 ปี', percentage: '8%' },
+          { duration: '3 เดือน', percentage: data['tree_month_roc'] || '-' },
+          { duration: '6 เดือน', percentage: data['six_month_roc'] || '-' },
+          { duration: 'YTD', percentage: data['ytd_std'] || '-'  },
+          { duration: '3 ปี', percentage: data['std_three_year'] || '-'  },
+          { duration: '5 ปี', percentage: data['std_five_year'] || '-' },
+          { duration: '10 ปี', percentage: data['std_ten_year'] || '-' },
         ];
       } else if (content === 'sharpeRatio') {
         // เปลี่ยนข้อมูลใน SummaryData สำหรับ 'sharpeRatio'
         SummaryData.value = [
-          { duration: '3 เดือน', percentage: '0%' },
-          { duration: '6 เดือน', percentage: '0%' },
-          { duration: 'YTD', percentage: '1%' },
-          { duration: '3 ปี', percentage: '3%' },
-          { duration: '5 ปี', percentage: '5%' },
-          { duration: '10 ปี', percentage: '6%' },
+          { duration: '3 เดือน', percentage: data['sharpe_ratio_three_month'] || '-' },
+          { duration: '6 เดือน', percentage: data['sharpe_ratio_six_month'] || '-' },
+          { duration: 'YTD', percentage: data['sharpe_ratio_one_year'] || '-' },
+          { duration: '3 ปี', percentage: data['sharpe_ratio_three_year'] || '-' },
+          { duration: '5 ปี', percentage: data['sharpe_ratio_five_year'] || '-' },
+          { duration: '10 ปี', percentage: data['sharpe_ratio_ten_year'] || '-' },
         ];
       }
 
