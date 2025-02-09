@@ -1,5 +1,15 @@
 <template>
   <div class="login-container min-h-screen flex items-center justify-center">
+    <!-- Add LoadingSpinner here -->
+    <loading-spinner 
+      v-if="isLoading" 
+      message="กำลังเข้าสู่ระบบ..." 
+      class="absolute z-50"
+    />
+    
+    <!-- Add overlay when loading -->
+    <div v-if="isLoading" class="absolute inset-0 bg-black bg-opacity-50 z-40"></div>
+
     <div class="w-96 bg-white rounded-lg shadow-lg p-6">
       <!-- Logo -->
       <div class="flex justify-center mb-6">
@@ -66,6 +76,7 @@
 import { reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useToast } from 'vue-toastification'
+import LoadingSpinner from '@/components/Loading.vue'
 
 const router = useRouter()
 const toast = useToast()
@@ -80,6 +91,8 @@ const showPassword = ref(false)
 const togglePassword = () => {
   showPassword.value = !showPassword.value
 }
+
+const isLoading = ref(false)
 
 // ฟังก์ชันสำหรับส่งข้อมูลล็อกอินไปยัง API และรับ JWT token
 const handleSubmit = async () => {
@@ -120,6 +133,7 @@ const handleSubmit = async () => {
         timeout: 3000,
         toastClassName: "custom-toast-center"
       })
+      isLoading.value = false // Hide loading on error
       return
     }
 
@@ -132,6 +146,8 @@ const handleSubmit = async () => {
     // เก็บ JWT token ใน localStorage
     localStorage.setItem('jwtToken', token);
 
+    //  เก็บ username
+    localStorage.setItem('username', formData.username);
 
     // แสดง success toast
     toast.success('เข้าสู่ระบบสำเร็จ', {
@@ -142,10 +158,12 @@ const handleSubmit = async () => {
 
     // เปลี่ยน route ไปที่ /home หลังจาก 2 วินาที
     setTimeout(() => {
+      isLoading.value = false // Hide loading spinner
       router.push('/home')
     }, 2000)
 
   } catch (error) {
+    isLoading.value = false // Hide loading on error
     console.error('Error during login:', error)
     toast.error('เกิดข้อผิดพลาดระหว่างการเข้าสู่ระบบ', {
       position: "top-center",

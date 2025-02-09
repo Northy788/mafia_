@@ -11,6 +11,7 @@ import ForgotPassword from "./pages/ForgotPassword.vue";
 import SurveyExperience from "./pages/SurveyExperience.vue";
 import SurveyTax from "./pages/SurveyTax.vue";
 import Transaction from "./pages/Transaction.vue";
+import Summary from "./pages/Summary.vue";
 import { createRouter, createWebHistory } from "vue-router";
 
 const routes = [
@@ -114,6 +115,14 @@ const routes = [
     name: "Transaction",
     component: Transaction,
     path: "/transaction",
+    meta: {
+      title: "MutuAl Fund Investment Advisor (MAFIA)",
+    },  
+  },
+  {
+    name: "Summary",
+    component: Summary,
+    path: "/summary",
     meta: {
       title: "MutuAl Fund Investment Advisor (MAFIA)",
     },  
