@@ -8,6 +8,7 @@
     <!-- ลิงก์เมนู -->
     <a href="home" class="nav-link font-bold">หน้าแรก</a>
     <a href="dashboard" class="nav-link font-bold">ภาพรวมพอร์ต</a>
+    <a href="transaction" class="nav-link font-bold">ประวัติซื้อขาย</a>
     <a href="about-tax" class="nav-link font-bold">เกี่ยวกับภาษี</a>
     
     <!-- ช่องว่างระหว่างลิงก์ซ้ายและขวา -->

@@ -4,51 +4,49 @@
     <div class="grid grid-cols-1 lg:grid-cols-6 lg:grid-rows-[150px_auto] gap-4 mx-4 lg:mx-64 mt-10 mb-10">
       <!-- Card 1: Asset Card -->
       <div
-        class="lg:col-span-4 w-full p-4 bg-white border border-gray-200 rounded-lg shadow sm:p-4 dark:bg-gray-800 dark:border-gray-700">
-        <div class="flex justify-between mb-2">
-          <div>
-            <span
-              class="bg-blue-100 text-blue-800 text-sm font-medium me-2 px-2.5 py-0.5 rounded dark:bg-blue-900 dark:text-blue-300">ความเสี่ยง</span>
-            <span
-              class="bg-blue-100 text-blue-800 text-sm font-medium me-2 px-2.5 py-0.5 rounded dark:bg-blue-900 dark:text-blue-300">ลดหย่อนภาษี</span>
+        class="lg:col-span-4 w-full p-4 bg-white border border-gray-300 rounded-lg shadow-md sm:p-4 dark:bg-gray-800 dark:border-gray-700">
+        <div class="flex justify-between mb-2 items-center">
+          <!-- 🔹 Risk & Fund Type Tags -->
+          <div class="flex space-x-2">
+            <span class="bg-blue-200 text-blue-900 text-xs font-semibold px-3 py-1 rounded-md">
+              ความเสี่ยง {{ fund_info.fund_risk }}
+            </span>
+            <span class="bg-blue-200 text-blue-900 text-xs font-semibold px-3 py-1 rounded-md">
+              กองทุน {{ fund_info.category }}
+            </span>
           </div>
-          <transition name="modal">
-            <BuysellPopUp ref="buySellModal" />
-          </transition>
+
+
           <div id="app" ref="menuContainer" class="relative inline-block">
-            <!-- Slide-Up Menu -->
-            <transition enter-active-class="transition transform ease-out duration-300"
-              enter-from-class="translate-y-4 opacity-0" enter-to-class="translate-y-0 opacity-100"
-              leave-active-class="transition transform ease-in duration-200"
-              leave-from-class="translate-y-0 opacity-100" leave-to-class="translate-y-4 opacity-0">
-              <div v-if="showMenu" class="absolute bottom-full mb-2 flex flex-col space-y-2">
-                <button type="button" @click="openModal"
-                  class="px-3 py-0.5 text-xs font-medium text-white bg-green-500 rounded-lg hover:bg-green-600 focus:ring-4 focus:outline-none focus:ring-green-300">
-                  ซื้อ
-                </button>
-                <button type="button"
-                  class="px-3 py-0.5 text-xs font-medium text-white bg-red-500 rounded-lg hover:bg-red-600 focus:ring-4 focus:outline-none focus:ring-red-300">
-                  ขาย
-                </button>
-              </div>
-            </transition>
-            <button type="button" @click="toggleMenu"
-              class="px-3 py-0.5 text-xs font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
-              ซื้อ-ขาย
+            <!-- ✅ Invest Button (Balanced Size) -->
+            <button type="button" @click="openModal"
+              class="px-4 py-2 text-sm font-medium text-white bg-[#0F172A] rounded-md shadow-md hover:bg-[#1E293B] transition">
+              ลงทุนในกองทุนนี้
             </button>
+
+            <!-- ✅ Teleport for Modal Popup -->
+            <Teleport to="body">
+              <transition name="fade">
+                <div v-if="isModalOpen"
+                  class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+                  <BuySellPopUp @close="closeModal" :name="this.fundName" :fund-type="fund_type" />
+                </div>
+              </transition>
+            </Teleport>
           </div>
+
         </div>
-        <div class="flex justify-between items-center">
+
+        <!-- 🔹 Fund Name & NAV Details -->
+        <div class="flex justify-between items-center mt-2">
           <div class="text-left">
-            <!-- fundName จาก route -->
-            <div class="text-2xl">{{ fundName }}</div>
-            <div class="text-xl">Full Name</div>
+            <h2 class="text-xl font-bold text-gray-800 dark:text-gray-100">{{ this.fundName }}</h2>
           </div>
-          <div class="flex gap-5 items-center">
-            <div>
-              <div class="text-2xl">1.234567</div>
-              <div class="text-xl">0.00 (0.00%)</div>
-            </div>
+          <div class="text-right">
+            <p class="text-2xl font-bold">{{ formatNumber(nav_latest) }}</p>
+            <p :class="gainloss_value >= 0 ? 'text-green-500' : 'text-red-500'" class="text-lg font-semibold">
+              {{ formatNumber(gainloss_value) }} ({{ formatNumber(gainloss_percent) }}%)
+            </p>
           </div>
         </div>
       </div>
@@ -260,32 +258,32 @@
               <!-- หนังสือชี้ชวน -->
               <div class="flex justify-between items-center mb-2">
                 <span class="font-semibold">หนังสือชี้ชวน</span>
-                <span class="text-gray-500 dark:text-gray-400">หนังสือชี้ชวน</span>
+                <span @click="" class="text-gray-500 dark:text-gray-400">หนังสือชี้ชวน</span>
               </div>
               <!-- บลจ. -->
               <div class="flex justify-between items-center mb-2">
                 <span class="font-semibold">บลจ.</span>
-                <span class="text-gray-500 dark:text-gray-400">ชื่อ บลจ.</span>
+                <span class="text-gray-500 dark:text-gray-400">{{ fund_info.company }}</span>
               </div>
               <!-- ประเภทกองทุน -->
               <div class="flex justify-between items-center mb-2">
                 <span class="font-semibold">ประเภทกองทุน</span>
-                <span class="text-gray-500 dark:text-gray-400">หุ้น</span>
+                <span class="text-gray-500 dark:text-gray-400">{{ fund_info.fund_type }}</span>
               </div>
               <!-- ความเสี่ยง -->
               <div class="flex justify-between items-center mb-2">
                 <span class="font-semibold">ความเสี่ยง</span>
-                <span class="text-gray-500 dark:text-gray-400">หุ้น</span>
+                <span class="text-gray-500 dark:text-gray-400">{{ fund_info.fund_risk }}</span>
               </div>
               <!-- จ่ายปันผล -->
               <div class="flex justify-between items-center mb-2">
                 <span class="font-semibold">นโยบายการจ่ายปันผล</span>
-                <span class="text-gray-500 dark:text-gray-400">ม่ายจ่าย</span>
+                <span class="text-gray-500 dark:text-gray-400">{{ fund_info.dividend_policy }}</span>
               </div>
               <!-- รายการที่ 2 -->
               <div class="flex justify-between items-center mb-2">
                 <span class="font-semibold">มูลค่าทรัพย์สินสุทธิ</span>
-                <span class="text-gray-500 dark:text-gray-400">1,000,000 บาท</span>
+                <span class="text-gray-500 dark:text-gray-400">{{ formatNumber(lasted_info.total_net_assets) }} บาท</span>
               </div>
               <div class="hidden md:block absolute inset-y-0 left-1/2 w-px bg-gray-300"></div>
             </div>
@@ -293,27 +291,27 @@
               <!-- ค่าธรรมเนียมการขาย -->
               <div class="flex justify-between items-center mb-2">
                 <span class="font-semibold">ค่าธรรมเนียมการขาย</span>
-                <span class="text-gray-500 dark:text-gray-400">0.00%</span>
+                <span class="text-gray-500 dark:text-gray-400">{{ formatNumber(fund_info.purchase_fee) }}%</span>
               </div>
               <!-- ค่าธรรมเนียมรับซื้อคืน -->
               <div class="flex justify-between items-center mb-2">
                 <span class="font-semibold">ค่าธรรมเนียมรับซื้อคืน</span>
-                <span class="text-gray-500 dark:text-gray-400">0.00%</span>
+                <span class="text-gray-500 dark:text-gray-400">{{ formatNumber(fund_info.redemption_fee) }}%</span>
               </div>
               <!-- ค่าใช้จ่ายกองทุนรวม -->
               <div class="flex justify-between items-center mb-2">
                 <span class="font-semibold">ค่าใช้จ่ายกองทุนรวม</span>
-                <span class="text-gray-500 dark:text-gray-400">0.00%</span>
+                <span class="text-gray-500 dark:text-gray-400">{{ formatNumber(fund_info.fund_expense_ratio) }}%</span>
               </div>
               <!-- ลงทุนขั้นต่ำ -->
               <div class="flex justify-between items-center mb-2">
                 <span class="font-semibold">ลงทุนขั้นต่ำ</span>
-                <span class="text-gray-500 dark:text-gray-400">0.00%</span>
+                <span class="text-gray-500 dark:text-gray-400">{{ formatNumber(fund_info.minimum_initial_investment) }} บาท</span>
               </div>
               <!-- วันจดทะเบียนกองทุน -->
               <div class="flex justify-between items-center mb-2">
                 <span class="font-semibold">วันจดทะเบียนกองทุน</span>
-                <span class="text-gray-500 dark:text-gray-400">0.00%</span>
+                <span class="text-gray-500 dark:text-gray-400">{{ fund_info.fund_registration_date }}</span>
               </div>
             </div>
           </div>
@@ -325,7 +323,7 @@
 
 <script>
 import Navbar from "@/components/Navbar";
-import BuysellPopUp from "@/components/BuysellPopUp.vue";
+import BuySellPopUp from "@/components/BuySellPopUp";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -346,7 +344,7 @@ export default {
   components: {
     Navbar,
     Line,
-    BuysellPopUp
+    BuySellPopUp
   },
 
   setup() {
@@ -375,8 +373,8 @@ export default {
       }
 
       try {
-        const response = await fetch("/api/performance-mutual-funds/lastest/BERMF",
-        // const response = await fetch(`/api/performance-mutual-funds/lastest/${this.$route.query.name || ""}`,
+        const response = await fetch(`/api/performance-mutual-funds/lastest/BERMF`,
+          // const response = await fetch(`/api/performance-mutual-funds/lastest/${this.$route.query.name || ""}`,
           {
             method: "GET",
             headers: {
@@ -388,7 +386,7 @@ export default {
 
         data = await response.json()
 
-        console.log("get_performance_mutual_funds :", data)
+        // console.log("get_performance_mutual_funds :", data)
 
 
       } catch (error) {
@@ -401,7 +399,7 @@ export default {
         // เปลี่ยนข้อมูลใน SummaryData สำหรับ 'return'
         SummaryData.value = [
           { duration: '3 เดือน', percentage: data['tree_month_roc'] || '-' },
-          { duration: '6 เดือน', percentage: data['six_month_roc'] || '-'  },
+          { duration: '6 เดือน', percentage: data['six_month_roc'] || '-' },
           { duration: 'YTD', percentage: data['ytd_roc'] || '-' },
           { duration: '3 ปี', percentage: data['six_month_roc'] || '-' },
           { duration: '5 ปี', percentage: data['five_year_roc'] || '-' },
@@ -412,8 +410,8 @@ export default {
         SummaryData.value = [
           { duration: '3 เดือน', percentage: data['tree_month_roc'] || '-' },
           { duration: '6 เดือน', percentage: data['six_month_roc'] || '-' },
-          { duration: 'YTD', percentage: data['ytd_std'] || '-'  },
-          { duration: '3 ปี', percentage: data['std_three_year'] || '-'  },
+          { duration: 'YTD', percentage: data['ytd_std'] || '-' },
+          { duration: '3 ปี', percentage: data['std_three_year'] || '-' },
           { duration: '5 ปี', percentage: data['std_five_year'] || '-' },
           { duration: '10 ปี', percentage: data['std_ten_year'] || '-' },
         ];
@@ -445,8 +443,36 @@ export default {
 
   data() {
     return {
-      apiData: [],
+      nav_data: [],
+      fund_info: {
+        category: "",
+        company: "",
+        dividend_policy: "",
+        fund_expense_ratio: 0.0,
+        fund_fact: "",
+        fund_name: "",
+        fund_registration_date: "",
+        fund_risk: "",
+        fund_type: "",
+        minimum_initial_investment: 0,
+        model_ml_info_path: null,
+        purchase_fee: 0.0,
+        redemption_fee: 0.0,
+        securities_industry: ""
+      },
+      lasted_info: {
+        change: 0.0,                // ค่าเปลี่ยนแปลงของ NAV (Number)
+        date: "",                   // วันที่ (String)
+        fund_name: "",               // ชื่อกองทุน (String)
+        fund_type: "",               // ประเภทกองทุน (String)
+        nav: 0.0,                    // มูลค่า NAV (Number)
+        redemption_price: 0.0,        // ราคาขายคืน (Number)
+        selling_price: 0.0,           // ราคาขาย (Number)
+        total_net_assets: 0.0         // มูลค่าทรัพย์สินสุทธิ (Number)
+      },
       showMenu: false,
+      isModalOpen: false,
+      modalType: "buy",
       chartData: {
         labels: [], // chartData will be populated via fetchData or computed if needed
         datasets: [
@@ -468,6 +494,16 @@ export default {
         { id: "tab1", name: "คำแนะนำ" },
         { id: "tab2", name: "รายละเอียดกองทุน" }
       ],
+      risk_level: "",
+      catagory_type: "",
+      fund_type: "",
+      securities_industry: "",
+      category: "",
+      nav_latest: 0,
+      gainloss_value: 0.0,
+      gainloss_percent: 0.0,
+      total_net_assets: 0.0,
+      timeframe: 90
     };
   },
   computed: {
@@ -477,6 +513,15 @@ export default {
     }
   },
   methods: {
+    formatNumber(num) {
+      if (isNaN(num) || num === null || num === undefined) {
+        return "-"; // ถ้าค่าไม่ใช่ตัวเลขให้คืนค่า "-"
+      }
+
+      return Number(num)
+        .toFixed(2) // ปรับเป็นทศนิยม 2 ตำแหน่ง
+        .replace(/\B(?=(\d{3})+(?!\d))/g, ","); // ใส่ลูกน้ำทุก 3 หลัก
+    },
     toggleMenu() {
       this.showMenu = !this.showMenu;
     },
@@ -485,38 +530,83 @@ export default {
         this.showMenu = false;
       }
     },
-    openModal() {
+    openModal(type) {
+      this.modalType = type;
+      this.isModalOpen = true;
       this.showMenu = false;
-      if (this.$refs.buySellModal && this.$refs.buySellModal.openModal) {
-        this.$refs.buySellModal.openModal();
-      }
+    },
+    closeModal() {
+      this.isModalOpen = false;
     },
     async fetchData() {
       try {
-        // ใช้ fundName จาก route ใน URL สำหรับ fetch ข้อมูล
-        const endpoint = `/api/nav-history/fund/${encodeURIComponent(this.fundName)}`;
-        const response = await fetch(endpoint, {
+        // Fetch the fund info API
+        const endpoint1 = `/api/mutual-fund/${encodeURIComponent(this.fundName)}`;
+        const response1 = await fetch(endpoint1, {
           method: "GET",
-          headers: {
-            "Content-Type": "application/json"
-          }
+          headers: { "Content-Type": "application/json" }
         });
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
+        if (!response1.ok) {
+          throw new Error(`HTTP error! status: ${response2.status}`);
         }
-        const data = await response.json();
-        console.log("Fetched API data:", data);
-        this.apiData = data;
-        // หากต้องการอัพเดท chartData จาก apiData ให้คุณอัพเดท chartData ด้วย
-        this.updateChartData();
+        const data1 = await response1.json();
+        // console.log("Fetched API 2 data:", data2);
+        this.fund_info = data1; // Store the second API's data
+        console.log(this.fund_info);
+        // this.updateFundData();
+
+        const endpoint2 = `/api/nav-history/fund/${encodeURIComponent(this.fundName)}/window/1`;
+        const response2 = await fetch(endpoint2, {
+          method: "GET",
+          headers: { "Content-Type": "application/json" }
+        });
+        const data2 = await response2.json();
+        this.lasted_info = data2[0];
+        console.log(data2);
+        console.log(this.lasted_info);
+        this.nav_latest = this.lasted_info.nav;
+        this.gainloss_value = this.lasted_info.change;
+        this.gainloss_percent = (this.gainloss_value / (this.gainloss_value + this.nav_latest)) * 100.0;
+
+
+
+        // Fetch latest NAV
+        await this.fetchNav();  // ✅ Ensures `fetchNav()` runs **after** `fetchData()`
       } catch (error) {
         console.error("Failed to fetch API data:", error);
       }
     },
+    async fetchNav() {
+      // Fetch the nav API
+      const endpoint1 = `/api/nav-history/fund/${encodeURIComponent(this.fundName)}/window/${this.timeframe}`;
+      const response1 = await fetch(endpoint1, {
+        method: "GET",
+        headers: { "Content-Type": "application/json" }
+      });
+
+      if (!response1.ok) {
+        throw new Error(`HTTP error! status: ${response1.status}`);
+      }
+
+      const data1 = await response1.json();
+      // console.log("Fetched API 1 data:", data1);
+      this.nav_data = data1;
+
+      // Update the chart after fetching both APIs
+      this.updateChartData();
+    },
     updateChartData() {
-      // สมมุติว่าแต่ละ object ใน apiData มี field "date" และ "nav"
-      const labels = this.apiData.map(item => item.date);
-      const dataPoints = this.apiData.map(item => item.nav);
+      if (!this.nav_data || this.nav_data.length === 0) {
+        console.warn("No NAV data available.");
+        return;
+      }
+
+      // ✅ เรียงข้อมูลจากท้ายมาอันแรก (Latest → Oldest)
+      const reversedData = [...this.nav_data].reverse();
+
+      const labels = reversedData.map(item => item.date);
+      const dataPoints = reversedData.map(item => item.nav);
+      // ✅ อัปเดตข้อมูลกราฟโดยใช้ค่าที่ดึงมา
       this.chartData = {
         labels,
         datasets: [
@@ -532,14 +622,14 @@ export default {
       };
     },
   },
-
   mounted() {
     this.fetchData();
+    // this.fetchNav();
     document.addEventListener("click", this.handleClickOutside);
   },
   beforeUnmount() {
     document.removeEventListener("click", this.handleClickOutside);
-  },
+  }
 };
 </script>
 

@@ -1,5 +1,15 @@
 <template>
-  <div class="forgotpwd-page min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+  <div class="forgotpwd-page flex items-center justify-center relative">
+    <!-- Loading Spinner -->
+    <loading-spinner 
+      v-if="isLoading" 
+      message="กำลังตรวจสอบอีเมล..." 
+      class="absolute z-50"
+    />
+    
+    <!-- Overlay -->
+    <div v-if="isLoading" class="absolute inset-0 bg-black bg-opacity-50 z-40"></div>
+
     <!-- Card -->
     <div class="relative bg-white p-8 rounded-lg shadow-lg w-96 z-10">
       <!-- Logo -->
@@ -21,10 +31,11 @@
       <!-- Buttons -->
       <div class="mt-4 flex gap-2">
         <button
-          @click="handleSubmit"
-          class="w-full bg-teal-600 text-white py-2 rounded-full hover:bg-teal-700 transition"
+          @click="handleSubmit" 
+          :disabled="isLoading"
+          class="w-full bg-teal-600 text-white py-2 rounded-full hover:bg-teal-700 transition disabled:opacity-50"
         >
-          ต่อไป
+          {{ isLoading ? 'กำลังประมวลผล...' : 'ต่อไป' }}
         </button>
       </div>
     </div>
@@ -35,10 +46,12 @@
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { useToast } from 'vue-toastification';
+import LoadingSpinner from '@/components/Loading.vue';
 
 const email = ref('');
 const router = useRouter();
 const toast = useToast();
+const isLoading = ref(false);
 
 const handleSubmit = async () => {
   if (!email.value) {
@@ -50,6 +63,7 @@ const handleSubmit = async () => {
     return;
   }
 
+  isLoading.value = true;
   try {
     // API call to check email
     const emailExists = await checkEmailExists(email.value);
@@ -71,11 +85,13 @@ const handleSubmit = async () => {
       timeout: 3000,
       toastClassName: "custom-toast-center"
     });
+  } finally {
+    isLoading.value = false;
   }
 };
 </script>
 
-<style>
+<style scoped>
 .custom-toast-center {
   margin: 0 auto !important;
   text-align: center !important;

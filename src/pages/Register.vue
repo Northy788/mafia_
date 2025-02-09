@@ -1,6 +1,7 @@
 <template>
-    <div class="register-page flex flex-col items-center justify-center min-h-screen bg-cover bg-center">
-        <div class="register-container bg-white backdrop-blur-sm p-6 rounded-lg shadow-md w-96">
+    <div>
+        <div class="register-page flex flex-col items-center justify-center min-h-screen bg-cover bg-center">
+            <div class="register-container bg-white backdrop-blur-sm p-6 rounded-lg shadow-md w-96">
             <div class="flex justify-center mb-6">
                 <img src="@/assets/icon/logo1.png" alt="MAFIA Logo" class="h-16" />
             </div>
@@ -21,78 +22,50 @@
                     class="w-full px-4 py-2 border rounded-full focus:outline-none focus:ring-2 focus:ring-orange-400" 
                 />
                 <div class="relative">
-                    <input 
-                        v-model="password" 
-                        :type="showPassword ? 'text' : 'password'" 
-                        placeholder="รหัสผ่าน" 
-                        class="w-full px-4 py-2 border rounded-full focus:outline-none focus:ring-2 focus:ring-orange-400" 
-                    />
-                    <button 
-                        type="button" 
-                        @click="togglePassword" 
-                        class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700"
-                    >
-                        <svg 
-                            v-if="showPassword" 
-                            xmlns="http://www.w3.org/2000/svg" 
-                            class="h-5 w-5" 
-                            viewBox="0 0 24 24" 
-                            fill="none" 
-                            stroke="currentColor" 
-                            stroke-width="2" 
-                            stroke-linecap="round" 
-                            stroke-linejoin="round"
-                        >
+                    <input v-model="password" :type="showPassword ? 'text' : 'password'" placeholder="รหัสผ่าน"
+                        class="w-full px-4 py-2 border rounded-full focus:outline-none focus:ring-2 focus:ring-orange-400" />
+
+                    <button type="button" @click="togglePassword"
+                        class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700">
+                        <svg v-if="showPassword" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24"
+                            fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                            stroke-linejoin="round">
                             <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
                             <circle cx="12" cy="12" r="3" />
                         </svg>
-                        <svg 
-                            v-else 
-                            xmlns="http://www.w3.org/2000/svg" 
-                            class="h-5 w-5" 
-                            viewBox="0 0 24 24" 
-                            fill="none" 
-                            stroke="currentColor" 
-                            stroke-width="2" 
-                            stroke-linecap="round" 
-                            stroke-linejoin="round"
-                        >
-                            <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24" />
+                        <svg v-else xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path
+                                d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24" />
                             <line x1="1" y1="1" x2="23" y2="23" />
                         </svg>
                     </button>
                 </div>
                 <div class="relative">
-                    <input 
-                        v-model="birthday" 
-                        type="date" 
-                        placeholder="วัน/เดือน/ปีเกิด" 
-                        class="w-full px-3 py-2 border rounded-full focus:outline-none focus:ring-2 focus:ring-orange-400" 
-                    />
+                    <input v-model="birthday" type="date" placeholder="วัน/เดือน/ปีเกิด"
+                        class="w-full px-3 py-2 border rounded-full focus:outline-none focus:ring-2 focus:ring-orange-400" />
                 </div>
-                <select 
+                <!-- <select 
                     v-model="maritalStatus" 
-                    class="input-field w-full px-3 py-2 border rounded-full focus:outline-none focus:ring-2 focus:ring-orange-400"
+                    class="w-full px-3 py-2 border rounded-full focus:outline-none focus:ring-2 focus:ring-orange-400"
                 >
                     <option disabled value="">สถานะผู้ใช้งาน</option>
                     <option value="โสด">โสด</option>
                     <option value="สมรส">หย่า</option>
                     <option value="คู่สมรสมีเงินได้">คู่สมรสมีเงินได้ (แยกยื่น)</option>
                     <option value="คู่สมรสไม่มีเงินได้">คู่สมรสไม่มีเงินได้</option>
-                </select>
-                <select 
+                </select> -->
+                <!-- <select 
                     v-model="userType" 
-                    class="input-field w-full px-3 py-2 border rounded-full focus:outline-none focus:ring-2 focus:ring-orange-400"
+                    class="w-full px-3 py-2 border rounded-full focus:outline-none focus:ring-2 focus:ring-orange-400"
                 >
                     <option disabled value="">อาชีพ</option>
                     <option value="นักเรียน/นักศึกษา">นักเรียน/นักศึกษา</option>
                     <option value="พนักงานบริษัท">พนักงานบริษัท</option>
                     <option value="อื่นๆ">อื่นๆ</option>
-                </select>
-                <button 
-                    type="submit"
-                    class="w-full bg-teal-600 text-white py-2 rounded-full hover:bg-teal-800 transition-colors font-bold"
-                >
+                </select> -->
+                <button type="submit"
+                    class="w-full bg-teal-600 text-white py-2 rounded-full hover:bg-teal-800 transition-colors font-bold">
                     ลงทะเบียน
                 </button>
             </form>
@@ -102,78 +75,37 @@
             </p>
         </div>
     </div>
-    
+
     <!-- Survey Experience Popup -->
-    <transition 
-        enter-active-class="transition ease-out duration-300"
-        enter-from-class="transform opacity-0 scale-95"
-        enter-to-class="transform opacity-100 scale-100"
-        leave-active-class="transition ease-in duration-200"
-        leave-from-class="transform opacity-100 scale-100"
-        leave-to-class="transform opacity-0 scale-95"
-    >
-        <div 
-            v-if="isSurveyVisible" 
-            class="survey-popup-wrapper fixed inset-0 flex items-center justify-center z-50"
-        >
+    <transition enter-active-class="transition ease-out duration-300" enter-from-class="transform opacity-0 scale-95"
+        enter-to-class="transform opacity-100 scale-100" leave-active-class="transition ease-in duration-200"
+        leave-from-class="transform opacity-100 scale-100" leave-to-class="transform opacity-0 scale-95">
+        <div v-if="isSurveyVisible" class="survey-popup-wrapper fixed inset-0 flex items-center justify-center z-50">
             <div class="absolute inset-0 bg-black bg-opacity-50"></div>
-            <SurveyExPopUp 
-                :isVisible="isSurveyVisible"
-                :userData="getUserData"
-                @confirm="handleSurveyConfirm"
-                @close="closeSurvey"
-                class="relative"
-            />
+            <SurveyExPopUp :isVisible="isSurveyVisible" :userData="getUserData" @confirm="handleSurveyConfirm"
+                @close="closeSurvey" class="relative" />
         </div>
     </transition>
-    
+
     <!-- Toast Notifications -->
-    <transition
-        enter-active-class="transform ease-out duration-300 transition"
-        enter-from-class="translate-y-[-100%] opacity-0"
-        enter-to-class="translate-y-0 opacity-100"
-        leave-active-class="transition ease-in duration-200"
-        leave-from-class="opacity-100"
-        leave-to-class="opacity-0"
-    >
-        <div
-            v-if="toast.show"
-            :class="[
-                'fixed top-4 left-1/2 transform -translate-x-1/2 flex items-center px-4 py-3 rounded-lg text-white shadow-lg z-50',
-                toast.type === 'success' ? 'bg-green-500' : 'bg-red-500'
-            ]"
-        >
-            <svg
-                v-if="toast.type === 'success'"
-                class="w-6 h-6 mr-2"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-            >
-                <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M5 13l4 4L19 7"
-                />
+    <transition enter-active-class="transform ease-out duration-300 transition"
+        enter-from-class="translate-y-[-100%] opacity-0" enter-to-class="translate-y-0 opacity-100"
+        leave-active-class="transition ease-in duration-200" leave-from-class="opacity-100" leave-to-class="opacity-0">
+        <div v-if="toast.show" :class="[
+            'fixed top-4 left-1/2 transform -translate-x-1/2 flex items-center px-4 py-3 rounded-lg text-white shadow-lg z-50',
+            toast.type === 'success' ? 'bg-green-500' : 'bg-red-500'
+        ]">
+            <svg v-if="toast.type === 'success'" class="w-6 h-6 mr-2" fill="none" stroke="currentColor"
+                viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
             </svg>
-            <svg
-                v-else
-                class="w-6 h-6 mr-2"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-            >
-                <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M6 18L18 6M6 6l12 12"
-                />
+            <svg v-else class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
             </svg>
             {{ toast.message }}
         </div>
-    </transition>
+        </transition>
+        </div>
     </template>
     
     <script>
@@ -278,7 +210,7 @@
     };
     </script>
     
-    <style>
+    <style scoped>
     .register-page {
         background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('@/assets/images/bg0.jpg');
         background-size: cover;
@@ -310,11 +242,11 @@
         text-align: center !important;
     }
 
-    .Vue-Toastification__container.top-center {
-        top: 50% !important;
-        transform: translateY(-50%) !important;
-        left: 0;
-        right: 0;
-        margin: 0 auto;
-    }
-    </style>
+.Vue-Toastification__container.top-center {
+    top: 50% !important;
+    transform: translateY(-50%) !important;
+    left: 0;
+    right: 0;
+    margin: 0 auto;
+}
+</style>
